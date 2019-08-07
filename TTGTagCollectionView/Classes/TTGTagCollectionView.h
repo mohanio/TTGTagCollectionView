@@ -42,6 +42,8 @@ typedef NS_ENUM(NSInteger, TTGTagCollectionAlignment) {
 
 - (void)tagCollectionView:(TTGTagCollectionView *)tagCollectionView didSelectTag:(UIView *)tagView atIndex:(NSUInteger)index;
 
+- (void)tagCollectionView:(TTGTagCollectionView *)tagCollectionView didLongSelectTag:(UIView *)tagView atIndex:(NSUInteger)index;
+
 - (void)tagCollectionView:(TTGTagCollectionView *)tagCollectionView updateContentSize:(CGSize)contentSize;
 @end
 
