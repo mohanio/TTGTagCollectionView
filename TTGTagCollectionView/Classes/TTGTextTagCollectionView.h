@@ -86,6 +86,12 @@
                      selected:(BOOL)selected
                     tagConfig:(TTGTextTagConfig *)config;
 
+-(void)textTagCollectionView:(TTGTextTagCollectionView *)textTagCollectionView
+               didLongTapTag:(NSString *)tagText
+                     atIndex:(NSUInteger)index
+                    selected:(BOOL)selected
+                   tagConfig:(TTGTextTagConfig *)config;
+
 - (void)textTagCollectionView:(TTGTextTagCollectionView *)textTagCollectionView
             updateContentSize:(CGSize)contentSize;
 

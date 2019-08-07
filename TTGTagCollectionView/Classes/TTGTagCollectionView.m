@@ -60,6 +60,10 @@
     [tapGesture addTarget:self action:@selector(onTapGesture:)];
     [_containerView addGestureRecognizer:tapGesture];
     
+    UILongPressGestureRecognizer *longTapGesture = [UILongPressGestureRecognizer new];
+    [longTapGesture addTarget:self action:@selector(onLongTapGesture:)];
+    [_containerView addGestureRecognizer:longTapGesture];
+    
     [self setNeedsLayoutTagViews];
 }
 
@@ -137,6 +141,46 @@
     }
     if (_onTapAllArea) {
         _onTapAllArea(tapPointInCollectionView);
+    }
+}
+
+- (void)onLongTapGesture:(UILongPressGestureRecognizer *)tapGesture {
+    
+    if (tapGesture.state == UIGestureRecognizerStateBegan) {
+       NSLog(@"UIGestureRecognizerStateEnded");
+        CGPoint tapPointInCollectionView = [tapGesture locationInView:self];
+        
+        if (![self.dataSource respondsToSelector:@selector(numberOfTagsInTagCollectionView:)] ||
+            ![self.dataSource respondsToSelector:@selector(tagCollectionView:tagViewForIndex:)] ||
+            ![self.delegate respondsToSelector:@selector(tagCollectionView:didSelectTag:atIndex:)]) {
+            if (_onTapBlankArea) {
+                _onTapBlankArea(tapPointInCollectionView);
+            }
+            if (_onTapAllArea) {
+                _onTapAllArea(tapPointInCollectionView);
+            }
+            return;
+        }
+        
+        CGPoint tapPointInScrollView = [tapGesture locationInView:_containerView];
+        BOOL hasLocatedToTag = NO;
+        
+        for (NSUInteger i = 0; i < [self.dataSource numberOfTagsInTagCollectionView:self]; i++) {
+            UIView *tagView = [self.dataSource tagCollectionView:self tagViewForIndex:i];
+            if (CGRectContainsPoint(tagView.frame, tapPointInScrollView) && !tagView.isHidden) {
+                hasLocatedToTag = YES;
+                [self.delegate tagCollectionView:self didLongSelectTag:tagView atIndex:i];
+            }
+        }
+        
+        if (!hasLocatedToTag) {
+            if (_onTapBlankArea) {
+                _onTapBlankArea(tapPointInCollectionView);
+            }
+        }
+        if (_onTapAllArea) {
+            _onTapAllArea(tapPointInCollectionView);
+        }
     }
 }
 

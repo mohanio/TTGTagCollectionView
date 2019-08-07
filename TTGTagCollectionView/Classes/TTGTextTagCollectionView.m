@@ -636,6 +636,28 @@
     }
 }
 
+- (void)tagCollectionView:(TTGTagCollectionView *)tagCollectionView didLongSelectTag:(UIView *)tagView atIndex:(NSUInteger)index {
+    if (_enableTagSelection) {
+        TTGTextTagLabel *label = _tagLabels[index];
+        
+        if (!label.selected && _selectionLimit > 0 && [self allSelectedTags].count + 1 > _selectionLimit) {
+            return;
+        }
+        
+        label.selected = !label.selected;
+        
+        if (self.alignment == TTGTagCollectionAlignmentFillByExpandingWidth ||
+            self.alignment == TTGTagCollectionAlignmentFillByExpandingWidthExceptLastLine) {
+            [self reload];
+        } else {
+            [self updateStyleAndFrameForLabel:label];
+        }
+        if ([_delegate respondsToSelector:@selector(textTagCollectionView:didLongTapTag:atIndex:selected:tagConfig:)]) {
+            [_delegate textTagCollectionView:self didLongTapTag:label.label.text atIndex:index selected:label.selected tagConfig:label.config];
+        }
+    }
+}
+
 - (CGSize)tagCollectionView:(TTGTagCollectionView *)tagCollectionView sizeForTagAtIndex:(NSUInteger)index {
     return _tagLabels[index].frame.size;
 }
